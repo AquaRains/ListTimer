@@ -1,0 +1,34 @@
+﻿<Window x:Class="WpfApp1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="511" Width="489" Initialized="Window_Initialized">
+    <Window.Resources>
+        <local:TimerList x:Key="timerList">
+            
+            
+        </local:TimerList>
+    </Window.Resources>
+    
+    <Grid Name="OuterGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100*">
+            </RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="30*"></ColumnDefinition>
+            <ColumnDefinition Width="80*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <ListBox x:Name="ListMain" Foreground="Azure" Opacity="0.7" Grid.Row="0" Grid.Column="0" Margin="0,0,0,0"
+          DataContext="="       ItemsSource="{Binding}">
+            
+        </ListBox>
+        <Grid Grid.Row="0" Grid.Column="1" Margin="0,0,0,0" Background="AliceBlue" Opacity="0.3">
+            <Button x:Name="btnAdd" Margin="55,365,181,86" Click="btnAdd_Click"/>
+            <Button x:Name="btnRemove" Margin="189,365,47,86" Click="btnRemove_Click"/>
+        </Grid>
+    </Grid>
+</Window>
