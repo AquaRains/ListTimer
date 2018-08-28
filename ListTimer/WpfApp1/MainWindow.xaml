@@ -22,21 +22,22 @@
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <Border Margin="0,85,0,0" Grid.Row="1" BorderBrush="#FF0B2B4B">
+            <Border Margin="0,85,0,0" Grid.Row="1" Background="#FFEAFFD8" BorderBrush="#FF0B2B4B" BorderThickness="2">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                         <RowDefinition Height="0*"/>
                     </Grid.RowDefinitions>
 
-                    <Button x:Name="btnRemove" Margin="0,36,240,19" Click="btnRemove_Click" RenderTransformOrigin="-0.012,-13.286" Width="88" HorizontalAlignment="Right" />
-                    <Button x:Name="btnAdd" Margin="0,36,349,4" Click="btnAdd_Click" RenderTransformOrigin="-0.012,-13.286" Width="88" HorizontalAlignment="Right" />
-                    <CheckBox x:Name="CheckRunOption" Content="추가할때 바로 실행" Margin="0,10,114,19" HorizontalAlignment="Right" Width="121" RenderTransformOrigin="-0.198,0.5"/>
-                    <TextBlock HorizontalAlignment="Right" Margin="0,10,240,50" TextWrapping="Wrap" Text="TextBlock" Width="197"/>
+                    <Button x:Name="btnRemove" Margin="0,36,240,10" Click="btnRemove_Click" RenderTransformOrigin="-0.012,-13.286" Width="88" HorizontalAlignment="Right" >Remove Timer</Button>
+                    <Button x:Name="btnAdd" Margin="0,36,349,10" Click="btnAdd_Click" RenderTransformOrigin="-0.012,-13.286" Width="88" HorizontalAlignment="Right" >Add Timer</Button>
+
+                    <CheckBox x:Name="CheckRunOption" Content="추가할때 바로 실행" Margin="0,10,114,43" HorizontalAlignment="Right" Width="121" RenderTransformOrigin="-0.198,0.5"/>
+                    <TextBlock HorizontalAlignment="Right" Margin="0,10,240,43" TextWrapping="Wrap" Text="TextBlock" Width="197"/>
 
                 </Grid>
             </Border>
-            <Button Content="Button" HorizontalAlignment="Right" Margin="0,0,10,10" Grid.Row="2" VerticalAlignment="Bottom" Width="75" Click="Button_Click"/>
+            <Button Content="Button" HorizontalAlignment="Right" Margin="0,0,10,10" Grid.Row="2" VerticalAlignment="Bottom" Width="75" Click="Button_Click" IsCancel="True"/>
 
         </Grid>
         <ListBox x:Name="ListMain" RenderTransformOrigin="0.4,0.35"/>
