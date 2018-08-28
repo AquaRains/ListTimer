@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
+using System.Threading;
 
 namespace WpfApp1
 {
@@ -20,9 +22,27 @@ namespace WpfApp1
     /// </summary>
     public partial class TimerObject : UserControl
     {
-        public TimerObject()
+        DispatcherTimer Timer;
+        public TimeSpan elapseTime { get; private set; }
+
+        public TimerObject(TimeSpan time)
         {
             InitializeComponent();
+
+            Timer = new DispatcherTimer()
+            {
+                Interval = TimeSpan.FromMilliseconds(1),
+                IsEnabled = false
+            };
+            Timer.Tick += Timer_Tick;
+
+        }
+
+        
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

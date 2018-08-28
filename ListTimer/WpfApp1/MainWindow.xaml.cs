@@ -28,7 +28,7 @@ namespace WpfApp1
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
-            var item = new TimerObject();
+            var item = new TimerObject(TimeSpan.FromHours(2));
             item.Name = $"Timer{ListMain.Items.Count}";
             item.TimerText.Text = $"{item.Name}";
 
@@ -42,13 +42,14 @@ namespace WpfApp1
 
         private void Window_Initialized(object sender, EventArgs e)
         {
-            ListMain.MinWidth = new TimerObject().ActualWidth;
+            ListMain.MinWidth = new TimerObject(TimeSpan.MinValue).ActualWidth;
         }
 
-       
-     
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 
-    public class TimerList : ObservableCollection<TimerObject> { }
 }
 
