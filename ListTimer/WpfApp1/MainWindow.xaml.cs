@@ -16,7 +16,7 @@ using System.Collections.ObjectModel;
 using Timer = System.Timers.Timer;
 using System.Text.RegularExpressions;
 
-namespace WpfApp1
+namespace ListTimer
 {
     /// <summary>
     /// MainWindow.xaml에 대한 상호 작용 논리

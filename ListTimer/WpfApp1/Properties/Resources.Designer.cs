@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WpfApp1.Properties {
+namespace ListTimer.Properties {
     using System;
     
     
