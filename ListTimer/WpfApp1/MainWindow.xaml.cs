@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using Timer = System.Timers.Timer;
+using System.Text.RegularExpressions;
 
 namespace WpfApp1
 {
@@ -39,11 +40,16 @@ namespace WpfApp1
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
-            var item = new TimerObject(ListMain.Items,TimeSpan.FromSeconds(20),this.Timer);
-            item.Name = $"Timer{ListMain.Items.Count}";
-            item.TimerText.Text = $"{item.Name}";
+            TimeSpan ts = TimeSpan.Parse($"{TxtHour.Text}:{TxtMin.Text}:{TxtSec.Text}");
+            if (ts == new TimeSpan(0, 0, 0)) ts = TimeSpan.FromMinutes(5);
+            var item = new TimerObject(ListMain.Items, ts, this.Timer);
+            item.Name = $"Timer{DateTime.Now.Ticks % 1000000000}";
+            item.TimerText.Text = string.IsNullOrEmpty(this.TxtInputClockName.Text) ? item.Name : TxtInputClockName.Text;
 
             ListMain.Items.Add(item);
+            if (CheckRunOption.IsChecked ?? false) item.doStart();
+
+            TxtInputClockName.Text = "";
         }
 
         private void btnRemove_Click(object sender, RoutedEventArgs e)
@@ -59,6 +65,34 @@ namespace WpfApp1
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string s = Regex.Replace(((TextBox)sender).Text, @"[^\d]", "");
+            ((TextBox)sender).Text = s;
+            if(string.IsNullOrEmpty(((TextBox)sender).Text)) ((TextBox)sender).Text = "0";
+
+            switch ((sender as TextBox).Name)
+            {
+                case "TxtSec":
+                    {
+                        TxtSec.Text = (decimal.Parse(TxtSec.Text) % 60).ToString();
+                        break;
+                    }
+
+                case "TxtMin":
+                    {
+                        TxtMin.Text = (decimal.Parse(TxtMin.Text) % 60).ToString();
+                        break;
+                    }
+
+                case "TxtHour":
+                    {
+                        TxtHour.Text = (decimal.Parse(TxtHour.Text) % 24).ToString();
+                        break;
+                    }
+            }
         }
     }
 

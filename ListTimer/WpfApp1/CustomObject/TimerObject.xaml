@@ -11,11 +11,11 @@
             <ColumnDefinition Width="150"/>
             <ColumnDefinition Width="0*"/>
         </Grid.ColumnDefinitions>
-        <TextBox x:Name="TimerText" TextWrapping="Wrap" Text="TextBox" HorizontalAlignment="Left" Width="90" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" />
+        <TextBox x:Name="TimerText" TextWrapping="Wrap" Text="TextBox" HorizontalAlignment="Left" Width="90" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
         <Button x:Name="BtnStart" Content="▶" Margin="0,0,112,0" Grid.Column="1" Click="BtnStart_Click" RenderTransformOrigin="-0.36,0.591" HorizontalAlignment="Right" Width="25"/>
         <Button x:Name="BtnPause" Content="&#10074;&#10074;" Margin="0,0,84,0" Grid.Column="1" HorizontalAlignment="Right" Width="25" Click="BtnPause_Click"/>
         <Button x:Name="BtnStop" Content="■" Margin="0,0,56,0" RenderTransformOrigin="0.25,0.227" Grid.Column="1" HorizontalAlignment="Right" Width="24" Click="BtnStop_Click"/>
-        <TextBox x:Name="TimerTime" TextWrapping="Wrap" Text="TextBox" Margin="95,0,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Width="90"/>
+        <TextBox x:Name="TimerTime" TextWrapping="Wrap" Text="TextBox" Margin="95,0,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Width="90" IsReadOnly="True" IsReadOnlyCaretVisible="True"/>
         <Button x:Name="BtnRemove" Content="X" Grid.Column="1" Margin="0,0,10,0" HorizontalAlignment="Right" Width="25" Click="BtnRemove_Click"/>
 
     </Grid>

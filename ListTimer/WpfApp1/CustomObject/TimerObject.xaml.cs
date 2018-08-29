@@ -22,7 +22,7 @@ namespace WpfApp1
     /// <summary>
     /// TimerObject.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class TimerObject : UserControl
+    public partial class TimerObject : UserControl, IDisposable
     {
         Timer timer;
         ItemCollection ParentList { get; set; }
@@ -41,7 +41,7 @@ namespace WpfApp1
             All = int.MaxValue
         }
 
-        public TimerState State { get; private set; } = TimerState.None & (TimerState.First | TimerState.Cleared);
+        public TimerState State { get; private set; } 
         public TimeSpan ElapsedTime { get; private set; }
         public TimeSpan CurrentRemainedTime { get; set; }
         public TimeSpan SetRemainedTime { get; set; }
@@ -55,6 +55,7 @@ namespace WpfApp1
         public TimerObject(ItemCollection items)
         {
             this.ParentList = items;
+            this.State = (TimerState.First | TimerState.Cleared);
         }
 
         public TimerObject(ItemCollection items, TimeSpan time,Timer timer) : this(items)
@@ -67,10 +68,18 @@ namespace WpfApp1
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-           
+
             // await으로 하다보면 기다리다중첩되는 경우는 없나?
-          
-            Dispatcher.Invoke(Timer_ToInvoke);
+            try
+            {
+                Dispatcher.Invoke(Timer_ToInvoke);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            
             
         }
 
@@ -79,13 +88,8 @@ namespace WpfApp1
             //일단 남은 시간을 txtbox에 표시
             TimerTime.Text = $"{CurrentRemainedTime:hh\\:mm\\:ss\\.fff}";
 
-            if (((State & TimerState.Running) & (State & ~TimerState.Paused)) != 0)
+            if ((State & (TimerState.Running & ~TimerState.Paused)) != 0)
             {
-                // 사실 남은 시간과 비교하는건, 현재시각과 시작 시간과의차이랑 비교하면 끝인데
-                //(시작 시간 - 현재 시간 > 타이머지정시간 then Timer.Ring()),
-                // 현재남은 시간 표시를 해야해서 결국 일일히 계산해야 함.
-
-                //진행 시간계산하는 부분 ( 사실상 초시계 계산법과 동일 )
                 //시작시간은 과거이므로 항상 현재시각보다 작은값이지.
                 ElapsedTime = TimeSpan.FromTicks(DateTime.Now.Ticks - StartTimeTicks);
                 CurrentRemainedTime = SetRemainedTime - ElapsedTime;
@@ -93,7 +97,6 @@ namespace WpfApp1
                 {
                     Logic_stop();
                     OnTimeElapsed?.Invoke(this, null);  //이벤트 핸들러 호출
-
                 }
             }
         }
@@ -103,20 +106,28 @@ namespace WpfApp1
 
         private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
-            if (!((State & TimerState.Running) != 0))
+            if ((State & (TimerState.First | TimerState.Cleared)) != 0)
             {
                 StartTimeTicks = System.DateTime.Now.Ticks;
-                State |= TimerState.Running;
+                State = TimerState.Running;
             }
             else
-            if((State & TimerState.Paused) != 0)
+            if ((State & (TimerState.Paused & TimerState.Cleared)) != 0)
+            {
+                StartTimeTicks = System.DateTime.Now.Ticks;
+                State = TimerState.Running;
+            }
+            else
+            if((State & (TimerState.Paused & ~TimerState.Cleared))!= 0)
             {
                 //쉰 시간만큼 지난 시간값을 되돌리기
-                ElapsedTime -= TimeSpan.FromTicks(DateTime.Now.Ticks - StartTimeTicks);
-                //기준시간 다시 변경
-                StartTimeTicks = DateTime.Now.Ticks;
-                
+               // ElapsedTime = TimeSpan.FromTicks(DateTime.Now.Ticks - StartTimeTicks);              //기준시간 다시 변경
+               // StartTimeTicks = DateTime.Now.Ticks;
+                StartTimeTicks = (DateTime.Now.Ticks - ElapsedTime.Ticks);
+                //ElapsedTime = TimeSpan.FromTicks(0);
+
                 State &= ~TimerState.Paused;
+                State |= TimerState.Running;
             }
             
             State &= ~TimerState.Cleared;
@@ -124,14 +135,21 @@ namespace WpfApp1
             State |= TimerState.Running;
         }
 
+        public void doStart()
+        {
+            BtnStart_Click(null, null);
+        }
+
         private void BtnRemove_Click(object sender, RoutedEventArgs e)
         {
             ParentList.Remove(this);
+            State = TimerState.None | TimerState.Cleared | TimerState.Paused;
+            Dispose();
         }
 
         private void BtnPause_Click(object sender, RoutedEventArgs e)
         {
-            State |= TimerState.Paused;
+            State = TimerState.Paused;
             StartTimeTicks = DateTime.Now.Ticks;
         }
 
@@ -142,8 +160,53 @@ namespace WpfApp1
 
         private void Logic_stop()
         {
-            State = TimerState.None | TimerState.Cleared | TimerState.Paused;
+            State = TimerState.Cleared | TimerState.Paused;
             CurrentRemainedTime = SetRemainedTime;
         }
+
+
+        /// <summary>
+        /// 지금 현재 문제가 되는 부분이라 임시로 땜빵해서 집어넣어서 테스트중인 부분인데, 솔직히 쓸모가 있는지는모르겠다.
+        /// </summary>
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    Logic_stop();
+                    State = TimerState.Cleared;
+                    
+                    // TODO: dispose managed state (managed objects).
+                    this.timer = null;
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // TODO: set large fields to null.
+
+                disposedValue = true;
+                GC.ReRegisterForFinalize(this);
+                GC.WaitForPendingFinalizers();
+            }
+        }
+
+        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        // ~TimerObject() {
+        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+        //   Dispose(false);
+        // }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            // GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }
