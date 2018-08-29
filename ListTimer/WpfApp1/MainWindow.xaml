@@ -4,40 +4,62 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="MainWindow" Height="511" Width="699" Initialized="Window_Initialized">
+        Title="MainWindow" Height="511" Width="1024" Initialized="Window_Initialized">
 
-
-    <Grid Name="OuterGrid">
+    <Grid Name="OuterGrid" Margin="0,0,2,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="100*">
             </RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="244"></ColumnDefinition>
+            <ColumnDefinition Width="335"></ColumnDefinition>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Grid Grid.Row="0" Grid.Column="1" Margin="0,0,0,0" Background="AliceBlue">
+        <Grid Grid.Row="0" Grid.Column="1" Background="AliceBlue">
             <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
+                <RowDefinition Height="195*"/>
+                <RowDefinition Height="61*"/>
+                <RowDefinition Height="115"/>
+                <RowDefinition Height="45"/>
             </Grid.RowDefinitions>
-            <Border Margin="0,85,0,0" Grid.Row="1" Background="#FFEAFFD8" BorderBrush="#FF0B2B4B" BorderThickness="2">
-                <Grid>
+            <Grid Margin="0,10" Grid.Row="2" Background="#FFEAFFD8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="190*"/>
+                    <ColumnDefinition Width="113*"/>
+                    <ColumnDefinition Width="114*"/>
+                    <ColumnDefinition Width="123*"/>
+                    <ColumnDefinition Width="99*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="6*"/>
+                </Grid.RowDefinitions>
+                <TextBox TextWrapping="Wrap" Text="0" Grid.Row="1" Grid.Column="1" TextAlignment="Right" Margin="10,0,0,0" MaxLines="1"/>
+                <TextBox TextWrapping="Wrap" Text="0" Grid.Row="1" Grid.Column="2" TextAlignment="Right" Margin="10,0,0,0" MaxLines="1"/>
+                <TextBox TextWrapping="Wrap" Text="0" Grid.Row="1" Grid.Column="3" TextAlignment="Right" Margin="10,0,0,0" MaxLines="1"/>
+                <TextBox TextWrapping="Wrap" Grid.Row="1" Margin="10,0,0,0" MaxLines="1"/>
+                <TextBlock TextWrapping="Wrap" Text="Hour" RenderTransformOrigin="2.361,0.625" TextAlignment="Right" Grid.Column="1" Height="20" VerticalAlignment="Bottom"/>
+                <TextBlock TextWrapping="Wrap" Text="Min." RenderTransformOrigin="2.361,0.625" TextAlignment="Right" Grid.Column="2" Height="20" VerticalAlignment="Bottom"/>
+                <TextBlock TextWrapping="Wrap" Text="Sec." RenderTransformOrigin="2.361,0.625" TextAlignment="Right" Grid.Column="3" Height="20" VerticalAlignment="Bottom"/>
+                <TextBlock TextWrapping="Wrap" Text="Clock Label" RenderTransformOrigin="2.361,0.625" TextAlignment="Right" Height="20" VerticalAlignment="Bottom"/>
+                <Grid Grid.Row="3" Grid.ColumnSpan="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="92*"/>
+                        <ColumnDefinition Width="91*"/>
+                        <ColumnDefinition Width="217*"/>
+                        <ColumnDefinition Width="214*"/>
+                    </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
-                        <RowDefinition Height="0*"/>
                     </Grid.RowDefinitions>
-
-                    <Button x:Name="btnRemove" Margin="0,36,240,10" Click="btnRemove_Click" RenderTransformOrigin="-0.012,-13.286" Width="88" HorizontalAlignment="Right" >Remove Timer</Button>
-                    <Button x:Name="btnAdd" Margin="0,36,349,10" Click="btnAdd_Click" RenderTransformOrigin="-0.012,-13.286" Width="88" HorizontalAlignment="Right" >Add Timer</Button>
-
-                    <CheckBox x:Name="CheckRunOption" Content="추가할때 바로 실행" Margin="0,10,114,43" HorizontalAlignment="Right" Width="121" RenderTransformOrigin="-0.198,0.5"/>
-                    <TextBlock HorizontalAlignment="Right" Margin="0,10,240,43" TextWrapping="Wrap" Text="TextBlock" Width="197"/>
-
+                    <Button Grid.Column="0" Grid.Row="0"  x:Name="btnAdd" Click="btnAdd_Click" Content="Add Timer" Grid.ColumnSpan="2" />
+                    <CheckBox x:Name="CheckRunOption" Content="추가할때 바로 실행" Margin="10,7,0,0" RenderTransformOrigin="-0.198,0.5" Height="22" VerticalAlignment="Top" HorizontalAlignment="Left" Width="121" Grid.Column="2"/>
                 </Grid>
-            </Border>
-            <Button Content="Button" HorizontalAlignment="Right" Margin="0,0,10,10" Grid.Row="2" VerticalAlignment="Bottom" Width="75" Click="Button_Click" IsCancel="True"/>
+
+            </Grid>
+            <Button Content="Close" HorizontalAlignment="Right" Margin="0,0,10,10" Grid.Row="3" VerticalAlignment="Bottom" Width="75" Click="Button_Click" IsCancel="True" Height="22" />
 
         </Grid>
         <ListBox x:Name="ListMain" RenderTransformOrigin="0.4,0.35"/>

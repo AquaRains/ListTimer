@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
+using Timer = System.Timers.Timer;
 
 namespace WpfApp1
 {
@@ -21,14 +22,24 @@ namespace WpfApp1
     /// </summary>
     public partial class MainWindow : Window
     {
+        Timer Timer { get; }
+
+
+
         public MainWindow()
         {
             InitializeComponent();
+            Timer = new Timer()
+            {
+                AutoReset = true,
+                Interval = 10,
+                Enabled = true
+            };
         }
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
-            var item = new TimerObject(TimeSpan.FromHours(2));
+            var item = new TimerObject(ListMain.Items,TimeSpan.FromSeconds(20),this.Timer);
             item.Name = $"Timer{ListMain.Items.Count}";
             item.TimerText.Text = $"{item.Name}";
 
@@ -42,7 +53,7 @@ namespace WpfApp1
 
         private void Window_Initialized(object sender, EventArgs e)
         {
-            ListMain.MinWidth = new TimerObject(TimeSpan.MinValue).ActualWidth;
+           // ListMain.MinWidth = new TimerObject(TimeSpan.MinValue,this.Timer).ActualWidth;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
