@@ -1,20 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Collections.ObjectModel;
 using Timer = System.Timers.Timer;
-using System.Text.RegularExpressions;
 
 namespace ListTimer
 {
@@ -38,40 +26,52 @@ namespace ListTimer
             };
         }
 
-        private void btnAdd_Click(object sender, RoutedEventArgs e)
+        private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
             TimeSpan ts = TimeSpan.Parse($"{TxtHour.Text}:{TxtMin.Text}:{TxtSec.Text}");
-            if (ts == new TimeSpan(0, 0, 0)) ts = TimeSpan.FromMinutes(5);
-            var item = new TimerObject(ListMain.Items, ts, this.Timer);
-            item.Name = $"Timer{DateTime.Now.Ticks % 1000000000}";
-            item.TimerText.Text = string.IsNullOrEmpty(this.TxtInputClockName.Text) ? item.Name : TxtInputClockName.Text;
+            if (ts == new TimeSpan(0, 0, 0))
+            {
+                ts = TimeSpan.FromMinutes(5);
+            }
+
+            TimerObject item = new TimerObject(ListMain.Items, ts, Timer)
+            {
+                Name = $"Timer{DateTime.Now.Ticks % 1000000000}"
+            };
+            item.TimerText.Text = string.IsNullOrEmpty(TxtInputClockName.Text) ? item.Name : TxtInputClockName.Text;
 
             ListMain.Items.Add(item);
-            if (CheckRunOption.IsChecked ?? false) item.doStart();
+            if (CheckRunOption.IsChecked ?? false)
+            {
+                item.doStart();
+            }
 
             TxtInputClockName.Text = "";
         }
 
         private void btnRemove_Click(object sender, RoutedEventArgs e)
         {
-            
+
         }
 
         private void Window_Initialized(object sender, EventArgs e)
         {
-           // ListMain.MinWidth = new TimerObject(TimeSpan.MinValue,this.Timer).ActualWidth;
+            // ListMain.MinWidth = new TimerObject(TimeSpan.MinValue,this.Timer).ActualWidth;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             string s = Regex.Replace(((TextBox)sender).Text, @"[^\d]", "");
             ((TextBox)sender).Text = s;
-            if(string.IsNullOrEmpty(((TextBox)sender).Text)) ((TextBox)sender).Text = "0";
+            if (string.IsNullOrEmpty(((TextBox)sender).Text))
+            {
+                ((TextBox)sender).Text = "0";
+            }
 
             switch ((sender as TextBox).Name)
             {

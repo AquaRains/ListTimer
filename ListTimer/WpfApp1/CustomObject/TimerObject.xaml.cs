@@ -1,20 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Threading;
-using System.Timers;
-
 using Timer = System.Timers.Timer;
 
 namespace ListTimer
@@ -41,7 +28,7 @@ namespace ListTimer
             All = int.MaxValue
         }
 
-        public TimerState State { get; private set; } 
+        public TimerState State { get; private set; }
         public TimeSpan ElapsedTime { get; private set; }
         public TimeSpan CurrentRemainedTime { get; set; }
         public TimeSpan SetRemainedTime { get; set; }
@@ -54,14 +41,14 @@ namespace ListTimer
         /// </summary>
         public TimerObject(ItemCollection items)
         {
-            this.ParentList = items;
-            this.State = (TimerState.First | TimerState.Cleared);
+            ParentList = items;
+            State = (TimerState.First | TimerState.Cleared);
         }
 
-        public TimerObject(ItemCollection items, TimeSpan time,Timer timer) : this(items)
+        public TimerObject(ItemCollection items, TimeSpan time, Timer timer) : this(items)
         {
             InitializeComponent();
-            this.SetRemainedTime = time;
+            SetRemainedTime = time;
             this.timer = timer;
             this.timer.Elapsed += Timer_Elapsed;
         }
@@ -74,13 +61,17 @@ namespace ListTimer
             {
                 Dispatcher.Invoke(Timer_ToInvoke);
             }
+            catch(OperationCanceledException)
+            {
+                return;
+            }
             catch (Exception)
             {
 
                 throw;
             }
-            
-            
+
+
         }
 
         private void Timer_ToInvoke()
@@ -118,18 +109,18 @@ namespace ListTimer
                 State = TimerState.Running;
             }
             else
-            if((State & (TimerState.Paused & ~TimerState.Cleared))!= 0)
+            if ((State & (TimerState.Paused & ~TimerState.Cleared)) != 0)
             {
                 //쉰 시간만큼 지난 시간값을 되돌리기
-               // ElapsedTime = TimeSpan.FromTicks(DateTime.Now.Ticks - StartTimeTicks);              //기준시간 다시 변경
-               // StartTimeTicks = DateTime.Now.Ticks;
+                // ElapsedTime = TimeSpan.FromTicks(DateTime.Now.Ticks - StartTimeTicks);              //기준시간 다시 변경
+                // StartTimeTicks = DateTime.Now.Ticks;
                 StartTimeTicks = (DateTime.Now.Ticks - ElapsedTime.Ticks);
                 //ElapsedTime = TimeSpan.FromTicks(0);
 
                 State &= ~TimerState.Paused;
                 State |= TimerState.Running;
             }
-            
+
             State &= ~TimerState.Cleared;
 
             State |= TimerState.Running;
@@ -169,7 +160,7 @@ namespace ListTimer
         /// 지금 현재 문제가 되는 부분이라 임시로 땜빵해서 집어넣어서 테스트중인 부분인데, 솔직히 쓸모가 있는지는모르겠다.
         /// </summary>
         #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
+        private bool disposedValue = false; 
 
         protected virtual void Dispose(bool disposing)
         {
@@ -179,13 +170,9 @@ namespace ListTimer
                 {
                     Logic_stop();
                     State = TimerState.Cleared;
-                    
-                    // TODO: dispose managed state (managed objects).
-                    this.timer = null;
-                }
 
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // TODO: set large fields to null.
+                    timer = null;
+                }
 
                 disposedValue = true;
                 GC.ReRegisterForFinalize(this);
@@ -193,19 +180,15 @@ namespace ListTimer
             }
         }
 
-        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~TimerObject() {
-        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        //   Dispose(false);
-        // }
+        ~TimerObject()
+        {
+            Dispose(false);
+        }
 
-        // This code added to correctly implement the disposable pattern.
         public void Dispose()
         {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
-            // TODO: uncomment the following line if the finalizer is overridden above.
-            // GC.SuppressFinalize(this);
+            GC.SuppressFinalize(this);
         }
         #endregion
     }

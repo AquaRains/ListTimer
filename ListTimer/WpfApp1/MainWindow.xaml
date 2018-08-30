@@ -54,7 +54,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <Button Grid.Column="0" Grid.Row="0"  x:Name="btnAdd" Click="btnAdd_Click" Content="Add Timer" Grid.ColumnSpan="2" />
+                    <Button Grid.Column="0" Grid.Row="0"  x:Name="btnAdd" Click="BtnAdd_Click" Content="Add Timer" Grid.ColumnSpan="2" />
                     <CheckBox x:Name="CheckRunOption" Content="추가할때 바로 실행" Margin="10,7,0,0" RenderTransformOrigin="-0.198,0.5" Height="22" VerticalAlignment="Top" HorizontalAlignment="Left" Width="121" Grid.Column="2"/>
                 </Grid>
 
