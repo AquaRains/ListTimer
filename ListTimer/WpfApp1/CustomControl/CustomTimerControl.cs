@@ -138,24 +138,27 @@ namespace ListTimer
 
         private void Timer_ToInvoke()
         {
-            //일단 남은 시간을 txtbox에 표시
-            TimerTime.Text = $"{DisplayTime:hh\\:mm\\:ss\\.fff}";
+            DisplayTime = TimeSpan.FromTicks(StartTimeTicks - DateTime.Now.Ticks);//A
 
             if((State & (TimerState.Running & ~TimerState.Paused)) != 0)
             {
                 //시작시간은 과거이므로 항상 현재시각보다 작은값이지.
 
-                DisplayTime = TimeSpan.FromTicks(StartTimeTicks - DateTime.Now.Ticks);//A
-
                 //ElapsedTime = TimeSpan.FromTicks(DateTime.Now.Ticks - tartTimeTicks);
                 //DisplayTime = Settingtime - ElapsedTime; //B
-                
+
                 if(DisplayTime.Ticks < 0)
                 {
                     Logic_stop();
                     OnTimerGoZero?.Invoke(this, null);  //이벤트 핸들러 호출
                 }
+                    //일단 남은 시간을 txtbox에 표시
+                    TimerTime.Text = $"{DisplayTime:hh\\:mm\\:ss\\.fff}";
+                
             }
+
+         
+
         }
 
 
