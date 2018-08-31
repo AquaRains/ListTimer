@@ -138,6 +138,8 @@ namespace ListTimer
 
         private void Timer_ToInvoke()
         {
+            //A와 B로직의 차이는 Button Start 부분을 참조할 것
+
             DisplayTime = TimeSpan.FromTicks(StartTimeTicks - DateTime.Now.Ticks);//A
 
             if((State & (TimerState.Running & ~TimerState.Paused)) != 0)
