@@ -28,10 +28,27 @@ namespace ListTimer
             All = int.MaxValue
         }
 
+        /// <summary>
+        /// 이 타이머의 상태
+        /// </summary>
         public TimerState State { get; private set; }
-        public TimeSpan ElapsedTime { get; private set; }
-        public TimeSpan CurrentRemainedTime { get; set; }
-        public TimeSpan SetRemainedTime { get; set; }
+        
+        /// <summary>
+        /// 이 타이머가 작동후 경과된 시간
+        /// </summary>
+        //public TimeSpan ElapsedTime { get; private set; }
+
+        /// <summary>
+        /// 진행중이던 타이머의 남은 시간
+        /// </summary>
+        public TimeSpan DisplayTime { get; set; }
+        /// <summary>
+        /// 이 타이머가 최초 생성될때 세팅된 초기 남은 시간
+        /// </summary>
+        public TimeSpan Settingtime { get; set; }
+        /// <summary>
+        ///  타이머가 시작 시각 tick값
+        /// </summary>
         public long StartTimeTicks { get; private set; }
 
         /// <summary>
@@ -48,7 +65,7 @@ namespace ListTimer
         public CustomTimerControl(ItemCollection items, TimeSpan time, Timer timer) : this(items)
         {
             InitializeComponent();
-            SetRemainedTime = time;
+            Settingtime = time;
             this.timer = timer;
             this.timer.Elapsed += Timer_Elapsed;
         }
@@ -63,9 +80,16 @@ namespace ListTimer
 
         private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
+            // A 일 경우 StartTime은 미래가 된다 ( 도달할 시간 )
+            // A 일 경우 도달한 시간만큼 남은 시간을 Display하면 된다. (목표 시간 - 현재시간)
+
+            // B 일 경우 StartTime은 과거가 된다 (시작한 시간)
+            // B 일 경우 DiplayTime은 StartTime에 진행된 시간(elapsedTime)을 더한 값이 된다.
+
             if ((State & (TimerState.First | TimerState.Cleared)) != 0)
             {
-                StartTimeTicks = System.DateTime.Now.Ticks;
+                StartTimeTicks = System.DateTime.Now.Ticks + Settingtime.Ticks;  //A
+                //StartTimeTicks = System.DateTime.Now.Ticks;  //B
                 State = TimerState.Running;
             }
             else
@@ -80,7 +104,8 @@ namespace ListTimer
                 //쉰 시간만큼 지난 시간값을 되돌리기
                 // ElapsedTime = TimeSpan.FromTicks(DateTime.Now.Ticks - StartTimeTicks);              //기준시간 다시 변경
                 // StartTimeTicks = DateTime.Now.Ticks;
-                StartTimeTicks = (DateTime.Now.Ticks - ElapsedTime.Ticks);
+                StartTimeTicks = DateTime.Now.Ticks + DisplayTime.Ticks; //A
+                //StartTimeTicks = (DateTime.Now.Ticks - ElapsedTime.Ticks); //B
                 //ElapsedTime = TimeSpan.FromTicks(0);
 
                 State &= ~TimerState.Paused;
@@ -114,14 +139,18 @@ namespace ListTimer
         private void Timer_ToInvoke()
         {
             //일단 남은 시간을 txtbox에 표시
-            TimerTime.Text = $"{CurrentRemainedTime:hh\\:mm\\:ss\\.fff}";
+            TimerTime.Text = $"{DisplayTime:hh\\:mm\\:ss\\.fff}";
 
             if((State & (TimerState.Running & ~TimerState.Paused)) != 0)
             {
                 //시작시간은 과거이므로 항상 현재시각보다 작은값이지.
-                ElapsedTime = TimeSpan.FromTicks(DateTime.Now.Ticks - StartTimeTicks);
-                CurrentRemainedTime = SetRemainedTime - ElapsedTime;
-                if(CurrentRemainedTime.Ticks < 0)
+
+                DisplayTime = TimeSpan.FromTicks(StartTimeTicks - DateTime.Now.Ticks);//A
+
+                //ElapsedTime = TimeSpan.FromTicks(DateTime.Now.Ticks - tartTimeTicks);
+                //DisplayTime = Settingtime - ElapsedTime; //B
+                
+                if(DisplayTime.Ticks < 0)
                 {
                     Logic_stop();
                     OnTimerGoZero?.Invoke(this, null);  //이벤트 핸들러 호출
@@ -151,7 +180,7 @@ namespace ListTimer
         private void Logic_stop()
         {
             State = TimerState.Cleared | TimerState.Paused;
-            CurrentRemainedTime = SetRemainedTime;
+            DisplayTime = Settingtime;
         }
 
 
