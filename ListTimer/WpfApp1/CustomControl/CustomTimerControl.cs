@@ -158,6 +158,7 @@ namespace ListTimer
 
         /// <summary>
         /// 지금 현재 문제가 되는 부분이라 임시로 땜빵해서 집어넣어서 테스트중인 부분인데, 솔직히 쓸모가 있는지는모르겠다.
+        /// 09-01 수정 : timer의 참조 뿐 아니라 timer가 갖고있던 이벤트핸들러 구독을 함께 취소하니 의존성이 떨어져나갔다.
         /// </summary>
         #region IDisposable Support
         private bool disposedValue = false; 
