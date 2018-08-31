@@ -37,7 +37,7 @@ namespace ListTimer
         /// <summary>
         /// 하 원래 List같은걸로 가져와서 해야하는데..그냥 귀찮으니까 ItemCollection으로 받아서 와야겠다.
         /// 정석대로라면 ControlCollection류를 MinWindow에서 선언한다음,
-        /// 그걸 ListConstrol에 DataSource로 사용하고 , 여기서 그 Collection을 받아와서 사용해야 맞음.
+        /// 그걸 ListConstrol에 DataSource로 사용하고 , 여기서 그 Collection을 받아와서 사용해야 좀 더 바람직하지 싶다.
         /// </summary>
         public CustomTimerControl(ItemCollection items)
         {
@@ -53,47 +53,13 @@ namespace ListTimer
             this.timer.Elapsed += Timer_Elapsed;
         }
 
-        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+
+        public void doStart()
         {
-
-            // await으로 하다보면 기다리다중첩되는 경우는 없나?
-            try
-            {
-                Dispatcher.Invoke(Timer_ToInvoke);
-            }
-            catch(OperationCanceledException)
-            {
-                return;
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-
-
+            BtnStart_Click(null, null);
         }
-
-        private void Timer_ToInvoke()
-        {
-            //일단 남은 시간을 txtbox에 표시
-            TimerTime.Text = $"{CurrentRemainedTime:hh\\:mm\\:ss\\.fff}";
-
-            if ((State & (TimerState.Running & ~TimerState.Paused)) != 0)
-            {
-                //시작시간은 과거이므로 항상 현재시각보다 작은값이지.
-                ElapsedTime = TimeSpan.FromTicks(DateTime.Now.Ticks - StartTimeTicks);
-                CurrentRemainedTime = SetRemainedTime - ElapsedTime;
-                if (CurrentRemainedTime.Ticks < 0)
-                {
-                    Logic_stop();
-                    OnTimeElapsed?.Invoke(this, null);  //이벤트 핸들러 호출
-                }
-            }
-        }
-
         //ElapsedTime값이 0 이하일때 발생되는 이벤트입니다.
-        public event EventHandler OnTimeElapsed;
+        public event EventHandler OnTimerGoZero;
 
         private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
@@ -126,10 +92,43 @@ namespace ListTimer
             State |= TimerState.Running;
         }
 
-        public void doStart()
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            BtnStart_Click(null, null);
+            try
+            {
+                Dispatcher.Invoke(Timer_ToInvoke);
+            }
+            catch(OperationCanceledException)
+            {
+                //취소되어봤자 메인윈도에 해가 될 일은 없다.
+                return;
+            }
+            catch(Exception)
+            {
+                throw;
+            }
+
+
         }
+
+        private void Timer_ToInvoke()
+        {
+            //일단 남은 시간을 txtbox에 표시
+            TimerTime.Text = $"{CurrentRemainedTime:hh\\:mm\\:ss\\.fff}";
+
+            if((State & (TimerState.Running & ~TimerState.Paused)) != 0)
+            {
+                //시작시간은 과거이므로 항상 현재시각보다 작은값이지.
+                ElapsedTime = TimeSpan.FromTicks(DateTime.Now.Ticks - StartTimeTicks);
+                CurrentRemainedTime = SetRemainedTime - ElapsedTime;
+                if(CurrentRemainedTime.Ticks < 0)
+                {
+                    Logic_stop();
+                    OnTimerGoZero?.Invoke(this, null);  //이벤트 핸들러 호출
+                }
+            }
+        }
+
 
         private void BtnRemove_Click(object sender, RoutedEventArgs e)
         {
