@@ -171,7 +171,9 @@ namespace ListTimer
                     Logic_stop();
                     State = TimerState.Cleared;
 
+                    timer.Elapsed -= this.Timer_Elapsed;
                     timer = null;
+
                 }
 
                 disposedValue = true;
