@@ -9,7 +9,7 @@ namespace ListTimer
     /// <summary>
     /// TimerObject.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class TimerObject : UserControl, IDisposable
+    public partial class CustomTimerControl : UserControl, IDisposable
     {
         Timer timer;
         ItemCollection ParentList { get; set; }
@@ -39,13 +39,13 @@ namespace ListTimer
         /// 정석대로라면 ControlCollection류를 MinWindow에서 선언한다음,
         /// 그걸 ListConstrol에 DataSource로 사용하고 , 여기서 그 Collection을 받아와서 사용해야 맞음.
         /// </summary>
-        public TimerObject(ItemCollection items)
+        public CustomTimerControl(ItemCollection items)
         {
             ParentList = items;
             State = (TimerState.First | TimerState.Cleared);
         }
 
-        public TimerObject(ItemCollection items, TimeSpan time, Timer timer) : this(items)
+        public CustomTimerControl(ItemCollection items, TimeSpan time, Timer timer) : this(items)
         {
             InitializeComponent();
             SetRemainedTime = time;
@@ -182,7 +182,7 @@ namespace ListTimer
             }
         }
 
-        ~TimerObject()
+        ~CustomTimerControl()
         {
             Dispose(false);
         }

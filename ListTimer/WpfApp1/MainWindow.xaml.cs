@@ -34,7 +34,7 @@ namespace ListTimer
                 ts = TimeSpan.FromMinutes(5);
             }
 
-            TimerObject item = new TimerObject(ListMain.Items, ts, Timer)
+            CustomTimerControl item = new CustomTimerControl(ListMain.Items, ts, Timer)
             {
                 Name = $"Timer{DateTime.Now.Ticks % 1000000000}"
             };
