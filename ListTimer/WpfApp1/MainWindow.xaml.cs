@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using ListTimer.CustomControl;
 using Timer = System.Timers.Timer;
 
 namespace ListTimer
@@ -9,11 +11,9 @@ namespace ListTimer
     /// <summary>
     /// MainWindow.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
-        Timer Timer { get; }
-
-
+        private Timer Timer { get; }
 
         public MainWindow()
         {
@@ -43,15 +43,10 @@ namespace ListTimer
             ListMain.Items.Add(item);
             if (CheckRunOption.IsChecked ?? false)
             {
-                item.doStart();
+                item.DoStart();
             }
 
             TxtInputClockName.Text = "";
-        }
-
-        private void btnRemove_Click(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void Window_Initialized(object sender, EventArgs e)
@@ -73,23 +68,23 @@ namespace ListTimer
                 ((TextBox)sender).Text = "0";
             }
 
-            switch ((sender as TextBox).Name)
+            switch ((sender as TextBox)?.Name)
             {
                 case "TxtSec":
                     {
-                        TxtSec.Text = (decimal.Parse(TxtSec.Text) % 60).ToString();
+                        TxtSec.Text = (decimal.Parse(TxtSec.Text) % 60).ToString(CultureInfo.InvariantCulture);
                         break;
                     }
 
                 case "TxtMin":
                     {
-                        TxtMin.Text = (decimal.Parse(TxtMin.Text) % 60).ToString();
+                        TxtMin.Text = (decimal.Parse(TxtMin.Text) % 60).ToString(CultureInfo.InvariantCulture);
                         break;
                     }
 
                 case "TxtHour":
                     {
-                        TxtHour.Text = (decimal.Parse(TxtHour.Text) % 24).ToString();
+                        TxtHour.Text = (decimal.Parse(TxtHour.Text) % 24).ToString(CultureInfo.InvariantCulture);
                         break;
                     }
             }
